@@ -1,0 +1,6 @@
+/.next/
+/.swc/
+/.turbo/
+/node_modules/
+/src/generated/
+/public/mockServiceWorker.js

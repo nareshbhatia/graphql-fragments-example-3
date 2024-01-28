@@ -1,0 +1,56 @@
+# ---------- Accounts ----------
+
+type Account {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+}
+
+# ---------- Orders ----------
+
+type Order {
+  id: ID!
+  account: Account!
+  total: Float!
+}
+
+# ---------- Events ----------
+
+enum OrderEventType {
+  ORDER_RECEIVED
+  ORDER_SHIPPED
+  ORDER_DELAYED
+}
+
+type OrderEvent {
+  id: ID!
+  orderEventType: OrderEventType!
+  order: Order!
+}
+
+enum StatementEventType {
+  STATEMENT_CREATED
+}
+
+type StatementEvent {
+  id: ID!
+  statementEventType: StatementEventType!
+  orders: [Order!]!
+}
+
+union Event = OrderEvent | StatementEvent
+
+# ---------- Alerts ----------
+
+type Alert {
+  id: ID!
+  event: Event!
+}
+
+# ---------- Queries ----------
+
+type Query {
+  alert(id: ID!): Alert
+  alerts: [Alert!]!
+}
