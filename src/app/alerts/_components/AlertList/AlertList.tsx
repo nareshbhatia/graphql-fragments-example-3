@@ -20,14 +20,6 @@ const alertListDocument = graphql(/* GraphQL */ `
   query alertList {
     alerts {
       id
-      event {
-        ... on OrderEvent {
-          id
-        }
-        ... on StatementEvent {
-          id
-        }
-      }
       ...OrderAlertItem
       ...StatementAlertItem
     }

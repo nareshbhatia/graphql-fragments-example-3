@@ -1,7 +1,7 @@
 'use client';
 
-import { OrderAlertView } from './OrderAlertView';
-import { StatementAlertView } from './StatementAlertView';
+import { OrderEventView } from './OrderEventView';
+import { StatementEventView } from './StatementEventView';
 import { graphql } from '@/generated/gql';
 import { isOrderEvent, isStatementEvent } from '@/models';
 import { useQuery } from '@apollo/client';
@@ -18,14 +18,12 @@ const alertViewDocument = graphql(/* GraphQL */ `
       id
       event {
         ... on OrderEvent {
-          id
+          ...OrderEventView
         }
         ... on StatementEvent {
-          id
+          ...StatementEventView
         }
       }
-      ...OrderAlertView
-      ...StatementAlertView
     }
   }
 `);
@@ -57,10 +55,10 @@ export function AlertView({ alertId }: AlertViewProps) {
   const { event } = alert;
 
   return (
-    <div className="flex flex-1 flex-col gap-1">
-      {isOrderEvent(event) ? <OrderAlertView alert={alert} /> : undefined}
+    <div className="p-4 h-full flex flex-1 flex-col">
+      {isOrderEvent(event) ? <OrderEventView event={event} /> : undefined}
       {isStatementEvent(event) ? (
-        <StatementAlertView alert={alert} />
+        <StatementEventView event={event} />
       ) : undefined}
     </div>
   );
