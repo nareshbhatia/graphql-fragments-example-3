@@ -3,7 +3,6 @@ import { OrderEventType, StatementEventType } from '@/generated/gql/graphql';
 import type {
   Account,
   Alert,
-  Event,
   Order,
   OrderEvent,
   StatementEvent,

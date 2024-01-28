@@ -49,6 +49,9 @@ const config: Config = {
         emphasis: {
           foreground: 'hsl(var(--emphasis-foreground))',
         },
+        selected: {
+          DEFAULT: 'hsl(var(--selected))',
+        },
       },
       borderRadius: {
         lg: 'var(--radius)',

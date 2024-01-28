@@ -3,13 +3,13 @@ import { graphql, getFragmentData } from '@/generated/gql';
 import { capitalCase } from 'change-case';
 
 /*
- * "fragment StatementAlertItem" generates:
- *   1. StatementAlertItemFragment
- *   2. StatementAlertItemFragmentDoc
+ * "fragment StatementAlertView" generates:
+ *   1. StatementAlertViewFragment
+ *   2. StatementAlertViewFragmentDoc
  */
-const StatementAlertItemFragment = graphql(/* GraphQL */ `
+const StatementAlertViewFragment = graphql(/* GraphQL */ `
   # eslint-disable-next-line @graphql-eslint/no-one-place-fragments
-  fragment StatementAlertItem on Alert {
+  fragment StatementAlertView on Alert {
     id
     event {
       ... on StatementEvent {
@@ -23,23 +23,23 @@ const StatementAlertItemFragment = graphql(/* GraphQL */ `
   }
 `);
 
-interface StatementAlertItemProps {
-  alert: FragmentType<typeof StatementAlertItemFragment>;
+interface StatementAlertViewProps {
+  alert: FragmentType<typeof StatementAlertViewFragment>;
 }
 
-export function StatementAlertItem({
+export function StatementAlertView({
   alert: alertProp,
-}: StatementAlertItemProps) {
-  const alert = getFragmentData(StatementAlertItemFragment, alertProp);
+}: StatementAlertViewProps) {
+  const alert = getFragmentData(StatementAlertViewFragment, alertProp);
   const { event } = alert;
   return (
-    <>
+    <div className="bg-elevation-1 flex-1">
       <p className="text-sm font-medium leading-6">
         {capitalCase(event.statementEventType)}
       </p>
       <p className="mt-1 text-xs leading-5 text-muted-foreground">
         {event.orders.length} orders
       </p>
-    </>
+    </div>
   );
 }
