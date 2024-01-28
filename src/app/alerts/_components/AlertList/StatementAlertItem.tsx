@@ -1,5 +1,6 @@
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
+import { capitalCase } from 'change-case';
 
 /*
  * "fragment StatementAlertItem" generates:
@@ -33,7 +34,7 @@ export function StatementAlertItem(props: StatementAlertItemProps) {
   return (
     <>
       <p className="text-sm font-medium leading-none">
-        {event.statementEventType}
+        {capitalCase(event.statementEventType)}
       </p>
       <p className="text-sm text-muted-foreground">
         {event.orders.length} orders
