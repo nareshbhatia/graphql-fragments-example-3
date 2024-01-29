@@ -3,7 +3,6 @@
 import { OrderEventView } from './OrderEventView';
 import { StatementEventView } from './StatementEventView';
 import { graphql } from '@/generated/gql';
-import { StatementEvent } from '@/generated/gql/graphql';
 import { useQuery } from '@apollo/client';
 
 /*
@@ -38,6 +37,7 @@ export function AlertView({ alertId }: AlertViewProps) {
       id: alertId,
     },
   });
+  const alert = data?.alert;
 
   if (loading) {
     return <div className="p-4 h-full flex-1">Loading...</div>;
@@ -47,7 +47,6 @@ export function AlertView({ alertId }: AlertViewProps) {
     return <div className="p-4 h-full flex-1">Error: {error.message}</div>;
   }
 
-  const alert = data?.alert;
   if (!alert) {
     return <div className="p-4 h-full flex-1">Error: Alert not found</div>;
   }

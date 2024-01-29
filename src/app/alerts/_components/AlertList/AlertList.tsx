@@ -1,14 +1,13 @@
 'use client';
 
-import { graphql } from '@/generated/gql';
-import { useQuery } from '@apollo/client';
-import { usePathname } from 'next/navigation';
-import * as React from 'react';
-import { cn } from '@/lib/utils';
 import { OrderEventItem } from './OrderEventItem';
 import { StatementEventItem } from './StatementEventItem';
+import { graphql } from '@/generated/gql';
+import { cn } from '@/lib/utils';
+import { useQuery } from '@apollo/client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import * as React from 'react';
 
 /*
  * "query alertList" generates:
@@ -44,7 +43,6 @@ export function AlertList() {
 
   React.useEffect(() => {
     if (alerts && alerts.length > 0 && !selectedAlertId) {
-      console.log('---> router.push', alerts[0].id);
       router.push(`/alerts/${alerts[0].id}`);
     }
   }, [alerts, router, selectedAlertId]);
