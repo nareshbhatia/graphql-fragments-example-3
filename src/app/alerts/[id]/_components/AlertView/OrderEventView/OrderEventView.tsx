@@ -9,7 +9,6 @@ import { capitalCase } from 'change-case';
  *   2. OrderEventViewFragmentDoc
  */
 const OrderEventViewFragment = graphql(/* GraphQL */ `
-  # eslint-disable-next-line @graphql-eslint/no-one-place-fragments
   fragment OrderEventView on OrderEvent {
     id
     orderEventType

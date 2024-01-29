@@ -8,7 +8,6 @@ import { capitalCase } from 'change-case';
  *   2. StatementEventItemFragmentDoc
  */
 const StatementEventItemFragment = graphql(/* GraphQL */ `
-  # eslint-disable-next-line @graphql-eslint/no-one-place-fragments
   fragment StatementEventItem on StatementEvent {
     id
     statementEventType

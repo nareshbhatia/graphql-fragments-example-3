@@ -15,7 +15,6 @@ import { formatAsMoney } from '@/lib/utils';
  *   2. OrderViewFragmentDoc
  */
 const OrderViewFragment = graphql(/* GraphQL */ `
-  # eslint-disable-next-line @graphql-eslint/no-one-place-fragments
   fragment OrderView on Order {
     id
     account {
