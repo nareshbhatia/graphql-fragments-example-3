@@ -14,6 +14,11 @@ const OrderEventItemFragment = graphql(/* GraphQL */ `
     orderEventType
     order {
       id
+      account {
+        id
+        firstName
+        lastName
+      }
     }
   }
 `);
@@ -24,13 +29,17 @@ interface OrderEventItemProps {
 
 export function OrderEventItem({ event: eventProp }: OrderEventItemProps) {
   const event = getFragmentData(OrderEventItemFragment, eventProp);
+  const {
+    order: { account },
+  } = event;
+
   return (
     <>
       <p className="text-sm font-medium leading-6">
         {capitalCase(event.orderEventType)}
       </p>
       <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {event.order.id.split('-')[0]}
+        {account.firstName} {account.lastName}
       </p>
     </>
   );

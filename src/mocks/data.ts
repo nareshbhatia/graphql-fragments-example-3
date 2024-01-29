@@ -23,14 +23,22 @@ export const accounts: Account[] = Array.from(Array(100)).map(() => {
   };
 });
 
-export const orders: Order[] = Array.from(Array(100)).map(() => {
-  return {
-    __typename: 'Order',
-    id: faker.string.uuid(),
-    account: faker.helpers.arrayElement(accounts),
-    total: faker.number.float({ min: 10, max: 2000, fractionDigits: 2 }),
-  };
-});
+/**
+ * Creates some orders for each account
+ */
+export const orders: Order[] = accounts
+  .map((account) => {
+    const numOrders = faker.number.int({ min: 1, max: 20 });
+    return Array.from(Array(numOrders)).map(() => {
+      return {
+        __typename: 'Order',
+        id: faker.string.uuid(),
+        account,
+        total: faker.number.float({ min: 10, max: 2000, fractionDigits: 2 }),
+      } as Order;
+    });
+  })
+  .flat();
 
 export const orderEvents: OrderEvent[] = Array.from(Array(100)).map(() => {
   return {
@@ -41,16 +49,23 @@ export const orderEvents: OrderEvent[] = Array.from(Array(100)).map(() => {
   };
 });
 
-export const statementEvents: StatementEvent[] = Array.from(Array(100)).map(
-  () => {
-    return {
-      __typename: 'StatementEvent',
-      id: faker.string.uuid(),
-      statementEventType: faker.helpers.enumValue(StatementEventType),
-      orders: faker.helpers.arrayElements(orders, { min: 1, max: 10 }),
-    };
-  },
-);
+/**
+ * Creates a statement for each account
+ */
+export const statementEvents: StatementEvent[] = accounts.map((account) => {
+  // collect orders for the account
+  const filteredOrders = orders.filter(
+    (order) => order.account.id === account.id,
+  );
+
+  return {
+    __typename: 'StatementEvent',
+    id: faker.string.uuid(),
+    statementEventType: faker.helpers.enumValue(StatementEventType),
+    account,
+    orders: filteredOrders,
+  };
+});
 
 export const orderAlerts: Alert[] = orderEvents.map((event) => {
   return {
@@ -68,7 +83,7 @@ export const statementAlerts: Alert[] = statementEvents.map((event) => {
   };
 });
 
-export const alerts = faker.helpers.arrayElements(
-  [...orderAlerts, ...statementAlerts],
-  50,
-);
+export const alerts = faker.helpers.shuffle([
+  ...orderAlerts,
+  ...statementAlerts,
+]);

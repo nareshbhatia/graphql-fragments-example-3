@@ -26,7 +26,7 @@ interface OrderEventViewProps {
 export function OrderEventView({ event: eventProp }: OrderEventViewProps) {
   const event = getFragmentData(OrderEventViewFragment, eventProp);
   return (
-    <div className="flex-1 overflow-auto">
+    <div className="flex-1 flex flex-col h-full gap-4">
       <p className="text-sm font-medium leading-6">
         {capitalCase(event.orderEventType)}
       </p>

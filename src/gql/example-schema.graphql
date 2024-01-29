@@ -36,6 +36,7 @@ enum StatementEventType {
 type StatementEvent {
   id: ID!
   statementEventType: StatementEventType!
+  account: Account!
   orders: [Order!]!
 }
 

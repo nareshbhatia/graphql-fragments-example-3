@@ -12,6 +12,11 @@ const StatementEventItemFragment = graphql(/* GraphQL */ `
   fragment StatementEventItem on StatementEvent {
     id
     statementEventType
+    account {
+      id
+      firstName
+      lastName
+    }
     orders {
       id
     }
@@ -26,13 +31,15 @@ export function StatementEventItem({
   event: eventProp,
 }: StatementEventItemProps) {
   const event = getFragmentData(StatementEventItemFragment, eventProp);
+  const { account } = event;
+
   return (
     <>
       <p className="text-sm font-medium leading-6">
         {capitalCase(event.statementEventType)}
       </p>
       <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {event.orders.length} orders
+        {account.firstName} {account.lastName}
       </p>
     </>
   );
