@@ -8,6 +8,8 @@ be handled.
 union Event = OrderEvent | StatementEvent
 ```
 
+![Screenshot](assets/screenshot.png)
+
 ## Getting Started
 
 ### Development Build
