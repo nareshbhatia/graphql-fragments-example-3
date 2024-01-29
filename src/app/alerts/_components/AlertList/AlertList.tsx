@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { OrderEventItem } from './OrderEventItem';
 import { StatementEventItem } from './StatementEventItem';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 /*
  * "query alertList" generates:
@@ -33,10 +34,20 @@ const alertListDocument = graphql(/* GraphQL */ `
 
 export function AlertList() {
   const { data, loading, error } = useQuery(alertListDocument);
+  const alerts = data?.alerts;
 
   // extract selectedAlertId from a pathname like '/alerts/[id]'
   const pathname = usePathname();
   const [_blank, _alerts, selectedAlertId] = pathname.split('/');
+
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (alerts && alerts.length > 0 && !selectedAlertId) {
+      console.log('---> router.push', alerts[0].id);
+      router.push(`/alerts/${alerts[0].id}`);
+    }
+  }, [alerts, router, selectedAlertId]);
 
   if (loading) {
     return <div className="p-4 w-80 shrink-0">Loading...</div>;
@@ -46,7 +57,6 @@ export function AlertList() {
     return <div className="p-4 w-80 shrink-0">Error: {error.message}</div>;
   }
 
-  const alerts = data?.alerts;
   if (!alerts) {
     return <div className="p-4 w-80 shrink-0">Error: Alerts not found</div>;
   }
