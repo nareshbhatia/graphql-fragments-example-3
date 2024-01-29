@@ -28,7 +28,7 @@ export const orders: Order[] = Array.from(Array(100)).map(() => {
     __typename: 'Order',
     id: faker.string.uuid(),
     account: faker.helpers.arrayElement(accounts),
-    total: faker.number.float({ min: 10, max: 1000, fractionDigits: 2 }),
+    total: faker.number.float({ min: 10, max: 2000, fractionDigits: 2 }),
   };
 });
 

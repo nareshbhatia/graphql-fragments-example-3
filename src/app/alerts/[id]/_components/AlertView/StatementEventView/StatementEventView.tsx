@@ -30,16 +30,18 @@ export function StatementEventView({
   const event = getFragmentData(StatementEventViewFragment, eventProp);
   const { orders } = event;
   return (
-    <div className="bg-elevation-1 flex-1">
-      <p className="text-sm font-medium leading-6">
-        {capitalCase(event.statementEventType)}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {orders.length} orders
-      </p>
-      {orders.map((order) => (
-        <OrderView key={order.id} order={order} />
-      ))}
+    <div className="flex-1 flex flex-col h-full gap-4">
+      <div>
+        <p className="text-lg font-medium leading-6">
+          {capitalCase(event.statementEventType)}
+        </p>
+        <p className="text-xs text-muted-foreground">{orders.length} orders</p>
+      </div>
+      <div className="flex flex-1 flex-col gap-4 overflow-auto">
+        {orders.map((order) => (
+          <OrderView key={order.id} order={order} />
+        ))}
+      </div>
     </div>
   );
 }

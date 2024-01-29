@@ -3,6 +3,7 @@
 import { OrderEventView } from './OrderEventView';
 import { StatementEventView } from './StatementEventView';
 import { graphql } from '@/generated/gql';
+import { StatementEvent } from '@/generated/gql/graphql';
 import { isOrderEvent, isStatementEvent } from '@/models';
 import { useQuery } from '@apollo/client';
 
@@ -55,11 +56,11 @@ export function AlertView({ alertId }: AlertViewProps) {
   const { event } = alert;
 
   return (
-    <div className="p-4 h-full flex flex-1 flex-col">
-      {isOrderEvent(event) ? <OrderEventView event={event} /> : undefined}
-      {isStatementEvent(event) ? (
+    <div className="px-4 py-6 h-full flex flex-1 flex-col">
+      {event.__typename === 'OrderEvent' && <OrderEventView event={event} />}
+      {event.__typename === 'StatementEvent' && (
         <StatementEventView event={event} />
-      ) : undefined}
+      )}
     </div>
   );
 }

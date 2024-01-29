@@ -1,6 +1,13 @@
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
-import { capitalCase } from 'change-case';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { formatAsMoney } from '@/lib/utils';
 
 /*
  * "fragment OrderView" generates:
@@ -29,19 +36,21 @@ export function OrderView({ order: orderProp }: OrderViewProps) {
   const order = getFragmentData(OrderViewFragment, orderProp);
   const { account } = order;
   return (
-    <div className="flex-1 overflow-auto">
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {account.firstName} {account.lastName}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {account.email}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {order.id.split('-')[0]}
-      </p>
-      <p className="mt-1 text-xs leading-5 text-muted-foreground">
-        {order.total}
-      </p>
-    </div>
+    <Card>
+      <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2">
+        <div>
+          <CardTitle className="text-sm font-medium">
+            {account.firstName} {account.lastName}
+          </CardTitle>
+          <CardDescription>{account.email}</CardDescription>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {order.id.split('-')[0]}
+        </p>
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">${formatAsMoney(order.total)}</div>
+      </CardContent>
+    </Card>
   );
 }
