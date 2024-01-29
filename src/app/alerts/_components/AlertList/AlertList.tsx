@@ -4,10 +4,9 @@ import { graphql } from '@/generated/gql';
 import { useQuery } from '@apollo/client';
 import { usePathname } from 'next/navigation';
 import * as React from 'react';
-import { isOrderEvent, isStatementEvent } from '@/models';
 import { cn } from '@/lib/utils';
-import { OrderAlertItem } from './OrderAlertItem';
-import { StatementAlertItem } from './StatementAlertItem';
+import { OrderEventItem } from './OrderEventItem';
+import { StatementEventItem } from './StatementEventItem';
 import Link from 'next/link';
 
 /*
@@ -22,14 +21,12 @@ const alertListDocument = graphql(/* GraphQL */ `
       id
       event {
         ... on OrderEvent {
-          id
+          ...OrderEventItem
         }
         ... on StatementEvent {
-          id
+          ...StatementEventItem
         }
       }
-      ...OrderAlertItem
-      ...StatementAlertItem
     }
   }
 `);
@@ -70,12 +67,12 @@ export function AlertList() {
               )}
             >
               <Link href={`/alerts/${alert.id}`}>
-                {isOrderEvent(event) ? (
-                  <OrderAlertItem alert={alert} />
-                ) : undefined}
-                {isStatementEvent(event) ? (
-                  <StatementAlertItem alert={alert} />
-                ) : undefined}
+                {event.__typename === 'OrderEvent' && (
+                  <OrderEventItem event={event} />
+                )}
+                {event.__typename === 'StatementEvent' && (
+                  <StatementEventItem event={event} />
+                )}
               </Link>
             </li>
           );

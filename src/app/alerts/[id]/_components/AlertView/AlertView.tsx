@@ -4,7 +4,6 @@ import { OrderEventView } from './OrderEventView';
 import { StatementEventView } from './StatementEventView';
 import { graphql } from '@/generated/gql';
 import { StatementEvent } from '@/generated/gql/graphql';
-import { isOrderEvent, isStatementEvent } from '@/models';
 import { useQuery } from '@apollo/client';
 
 /*
