@@ -44,8 +44,16 @@ union Event = OrderEvent | StatementEvent
 
 # ---------- Alerts ----------
 
+enum AlertType {
+  ORDER_RECEIVED
+  ORDER_SHIPPED
+  ORDER_DELAYED
+  STATEMENT_CREATED
+}
+
 type Alert {
   id: ID!
+  alertType: AlertType
   event: Event!
 }
 

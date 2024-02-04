@@ -7,9 +7,16 @@ import type {
   OrderEvent,
   StatementEvent,
 } from '@/generated/gql/graphql';
+import {
+  OrderEventTypeToAlertType,
+  StatementEventTypeToAlertType,
+} from '@/models';
 
 faker.seed(42);
 
+/**
+ * Create some accounts
+ */
 export const accounts: Account[] = Array.from(Array(100)).map(() => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
@@ -24,7 +31,7 @@ export const accounts: Account[] = Array.from(Array(100)).map(() => {
 });
 
 /**
- * Creates some orders for each account
+ * Create some orders for each account
  */
 export const orders: Order[] = accounts
   .map((account) => {
@@ -40,6 +47,9 @@ export const orders: Order[] = accounts
   })
   .flat();
 
+/**
+ * Create orderEvents for some orders
+ */
 export const orderEvents: OrderEvent[] = Array.from(Array(100)).map(() => {
   return {
     __typename: 'OrderEvent',
@@ -50,7 +60,7 @@ export const orderEvents: OrderEvent[] = Array.from(Array(100)).map(() => {
 });
 
 /**
- * Creates a statement for each account
+ * Create statementEvents for each account
  */
 export const statementEvents: StatementEvent[] = accounts.map((account) => {
   // collect orders for the account
@@ -67,18 +77,26 @@ export const statementEvents: StatementEvent[] = accounts.map((account) => {
   };
 });
 
+/**
+ * Create orderAlerts for each orderEvent
+ */
 export const orderAlerts: Alert[] = orderEvents.map((event) => {
   return {
     __typename: 'Alert',
     id: faker.string.uuid(),
+    alertType: OrderEventTypeToAlertType[event.orderEventType],
     event,
   };
 });
 
+/**
+ * Create statementAlerts for each statementEvent
+ */
 export const statementAlerts: Alert[] = statementEvents.map((event) => {
   return {
     __typename: 'Alert',
     id: faker.string.uuid(),
+    alertType: StatementEventTypeToAlertType[event.statementEventType],
     event,
   };
 });
