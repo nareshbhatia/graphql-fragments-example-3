@@ -1,6 +1,7 @@
 import { OrderView } from '@/app/alerts/[id]/_components/AlertView/OrderView';
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
+import type { StatementEvent } from '@/generated/gql/graphql';
 import { capitalCase } from 'change-case';
 
 /*
@@ -9,35 +10,42 @@ import { capitalCase } from 'change-case';
  *   2. StatementEventViewFragmentDoc
  */
 const StatementEventViewFragment = graphql(/* GraphQL */ `
-  fragment StatementEventView on StatementEvent {
+  fragment StatementEventView on Alert {
     id
-    statementEventType
-    account {
-      id
-      firstName
-      lastName
-    }
-    orders {
-      id
-      ...OrderView
+    event {
+      ... on StatementEvent {
+        id
+        statementEventType
+        account {
+          id
+          firstName
+          lastName
+        }
+        orders {
+          id
+          ...OrderView
+        }
+      }
     }
   }
 `);
 
 interface StatementEventViewProps {
-  event: FragmentType<typeof StatementEventViewFragment>;
+  alert: FragmentType<typeof StatementEventViewFragment>;
 }
 
 export function StatementEventView({
-  event: eventProp,
+  alert: alertProp,
 }: StatementEventViewProps) {
-  const event = getFragmentData(StatementEventViewFragment, eventProp);
-  const { account, orders } = event;
+  const alert = getFragmentData(StatementEventViewFragment, alertProp);
+  const { event } = alert;
+  const statementEvent = event as StatementEvent;
+  const { account, orders, statementEventType } = statementEvent;
   return (
     <div className="flex-1 flex flex-col h-full gap-4">
       <div>
         <p className="text-lg font-medium leading-6">
-          {capitalCase(event.statementEventType)}
+          {capitalCase(statementEventType)}
         </p>
         <p className="text-xs text-muted-foreground">
           {orders.length} orders for {account.firstName} {account.lastName}

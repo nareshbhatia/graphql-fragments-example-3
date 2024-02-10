@@ -17,12 +17,14 @@ const alertViewDocument = graphql(/* GraphQL */ `
       id
       event {
         ... on OrderEvent {
-          ...OrderEventView
+          id
         }
         ... on StatementEvent {
-          ...StatementEventView
+          id
         }
       }
+      ...OrderEventView
+      ...StatementEventView
     }
   }
 `);
@@ -55,9 +57,9 @@ export function AlertView({ alertId }: AlertViewProps) {
 
   return (
     <div className="px-4 py-6 h-full flex flex-1 flex-col">
-      {event.__typename === 'OrderEvent' && <OrderEventView event={event} />}
+      {event.__typename === 'OrderEvent' && <OrderEventView alert={alert} />}
       {event.__typename === 'StatementEvent' && (
-        <StatementEventView event={event} />
+        <StatementEventView alert={alert} />
       )}
     </div>
   );

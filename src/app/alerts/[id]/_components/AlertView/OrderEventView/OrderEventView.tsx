@@ -1,6 +1,7 @@
 import { OrderView } from '@/app/alerts/[id]/_components/AlertView/OrderView';
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
+import type { OrderEvent } from '@/generated/gql/graphql';
 import { capitalCase } from 'change-case';
 
 /*
@@ -9,27 +10,36 @@ import { capitalCase } from 'change-case';
  *   2. OrderEventViewFragmentDoc
  */
 const OrderEventViewFragment = graphql(/* GraphQL */ `
-  fragment OrderEventView on OrderEvent {
+  fragment OrderEventView on Alert {
     id
-    orderEventType
-    order {
-      ...OrderView
+    event {
+      ... on OrderEvent {
+        id
+        orderEventType
+        order {
+          ...OrderView
+        }
+      }
     }
   }
 `);
 
 interface OrderEventViewProps {
-  event: FragmentType<typeof OrderEventViewFragment>;
+  alert: FragmentType<typeof OrderEventViewFragment>;
 }
 
-export function OrderEventView({ event: eventProp }: OrderEventViewProps) {
-  const event = getFragmentData(OrderEventViewFragment, eventProp);
+export function OrderEventView({ alert: alertProp }: OrderEventViewProps) {
+  const alert = getFragmentData(OrderEventViewFragment, alertProp);
+  const { event } = alert;
+  const orderEvent = event as OrderEvent;
+  const { order, orderEventType } = orderEvent;
+
   return (
     <div className="flex-1 flex flex-col h-full gap-4">
       <p className="text-sm font-medium leading-6">
-        {capitalCase(event.orderEventType)}
+        {capitalCase(orderEventType)}
       </p>
-      <OrderView order={event.order} />
+      <OrderView order={order} />
     </div>
   );
 }
