@@ -1,8 +1,8 @@
 import type {
   AlertListQuery,
   AlertListQueryVariables,
-  AlertViewQuery,
-  AlertViewQueryVariables,
+  AlertPageQuery,
+  AlertPageQueryVariables,
 } from '@/generated/gql/graphql';
 import { graphql, HttpResponse } from 'msw';
 import { alerts } from './data';
@@ -16,8 +16,8 @@ export const handlers = [
     }),
   ),
 
-  graphql.query<AlertViewQuery, AlertViewQueryVariables>(
-    'alertView',
+  graphql.query<AlertPageQuery, AlertPageQueryVariables>(
+    'alertPage',
     ({ variables }) => {
       const { id } = variables;
 

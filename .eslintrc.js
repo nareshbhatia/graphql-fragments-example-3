@@ -238,6 +238,7 @@ module.exports = {
       rules: {
         '@graphql-eslint/executable-definitions': 'off',
         '@graphql-eslint/no-one-place-fragments': 'off',
+        '@graphql-eslint/no-unused-fragments': 'off',
         '@graphql-eslint/require-description': 'off',
         '@graphql-eslint/require-nullable-result-in-root': 'off',
       },

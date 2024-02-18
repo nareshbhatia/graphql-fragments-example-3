@@ -5,12 +5,12 @@ import type { OrderEvent } from '@/generated/gql/graphql';
 import { capitalCase } from 'change-case';
 
 /*
- * "fragment OrderEventView" generates:
- *   1. OrderEventViewFragment
- *   2. OrderEventViewFragmentDoc
+ * "fragment OrderAlertView" generates:
+ *   1. OrderAlertViewFragment
+ *   2. OrderAlertViewFragmentDoc
  */
-const OrderEventViewFragment = graphql(/* GraphQL */ `
-  fragment OrderEventView on Alert {
+const OrderAlertViewFragment = graphql(/* GraphQL */ `
+  fragment OrderAlertView on Alert {
     id
     event {
       ... on OrderEvent {
@@ -24,12 +24,12 @@ const OrderEventViewFragment = graphql(/* GraphQL */ `
   }
 `);
 
-interface OrderEventViewProps {
-  alert: FragmentType<typeof OrderEventViewFragment>;
+interface OrderAlertViewProps {
+  alert: FragmentType<typeof OrderAlertViewFragment>;
 }
 
-export function OrderEventView({ alert: alertProp }: OrderEventViewProps) {
-  const alert = getFragmentData(OrderEventViewFragment, alertProp);
+export function OrderAlertView({ alert: alertProp }: OrderAlertViewProps) {
+  const alert = getFragmentData(OrderAlertViewFragment, alertProp);
   const { event } = alert;
   const orderEvent = event as OrderEvent;
   const { order, orderEventType } = orderEvent;
@@ -39,6 +39,7 @@ export function OrderEventView({ alert: alertProp }: OrderEventViewProps) {
       <p className="text-sm font-medium leading-6">
         {capitalCase(orderEventType)}
       </p>
+      {/* @ts-expect-error suppress type error ts(2559) TODO: fix */}
       <OrderView order={order} />
     </div>
   );

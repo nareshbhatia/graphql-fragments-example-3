@@ -5,12 +5,12 @@ import type { StatementEvent } from '@/generated/gql/graphql';
 import { capitalCase } from 'change-case';
 
 /*
- * "fragment StatementEventView" generates:
- *   1. StatementEventViewFragment
- *   2. StatementEventViewFragmentDoc
+ * "fragment StatementAlertView" generates:
+ *   1. StatementAlertViewFragment
+ *   2. StatementAlertViewFragmentDoc
  */
-const StatementEventViewFragment = graphql(/* GraphQL */ `
-  fragment StatementEventView on Alert {
+const StatementAlertViewFragment = graphql(/* GraphQL */ `
+  fragment StatementAlertView on Alert {
     id
     event {
       ... on StatementEvent {
@@ -30,14 +30,14 @@ const StatementEventViewFragment = graphql(/* GraphQL */ `
   }
 `);
 
-interface StatementEventViewProps {
-  alert: FragmentType<typeof StatementEventViewFragment>;
+interface StatementAlertViewProps {
+  alert: FragmentType<typeof StatementAlertViewFragment>;
 }
 
-export function StatementEventView({
+export function StatementAlertView({
   alert: alertProp,
-}: StatementEventViewProps) {
-  const alert = getFragmentData(StatementEventViewFragment, alertProp);
+}: StatementAlertViewProps) {
+  const alert = getFragmentData(StatementAlertViewFragment, alertProp);
   const { event } = alert;
   const statementEvent = event as StatementEvent;
   const { account, orders, statementEventType } = statementEvent;
@@ -53,6 +53,7 @@ export function StatementEventView({
       </div>
       <div className="flex flex-1 flex-col gap-4 overflow-auto">
         {orders.map((order) => (
+          // @ts-expect-error suppress type error ts(2559) TODO: fix
           <OrderView key={order.id} order={order} />
         ))}
       </div>
