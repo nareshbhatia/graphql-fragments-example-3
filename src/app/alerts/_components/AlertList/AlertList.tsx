@@ -1,5 +1,3 @@
-'use client';
-
 import { OrderEventItem } from './OrderEventItem';
 import { StatementEventItem } from './StatementEventItem';
 import {
@@ -8,25 +6,26 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { graphql } from '@/generated/gql';
+import type { FragmentType } from '@/generated/gql';
+import { graphql, getFragmentData } from '@/generated/gql';
 import { AlertType } from '@/generated/gql/graphql';
 import type { AlertSortAndGroupPartial } from '@/models';
 import { sortAndGroupAlerts } from '@/models';
 import { cn } from '@/lib/utils';
-import { useQuery } from '@apollo/client';
 import { capitalCase } from 'change-case';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import * as React from 'react';
 
+const baseStyles = 'bg-background w-80 shrink-0 overflow-auto';
+
 /*
- * "query alertList" generates:
- *   1. AlertListQuery
- *   2. AlertListQueryVariables
- *   3. AlertListDocument
+ * "fragment AlertList" generates:
+ *   1. AlertListFragment
+ *   2. AlertListFragmentDoc
  */
-const alertListDocument = graphql(/* GraphQL */ `
-  query alertList {
+const AlertListFragment = graphql(/* GraphQL */ `
+  fragment AlertList on AlertsWithCounts {
     alerts {
       id
       alertType
@@ -42,9 +41,20 @@ const alertListDocument = graphql(/* GraphQL */ `
   }
 `);
 
-export function AlertList() {
-  const { data, loading, error } = useQuery(alertListDocument);
-  const alerts = data?.alerts;
+export interface AlertListProps {
+  alertsWithCounts: FragmentType<typeof AlertListFragment>;
+}
+
+export function AlertList({
+  alertsWithCounts: alertsWithCountsProp,
+}: AlertListProps) {
+  console.log('----> AlertList prop', alertsWithCountsProp);
+  const alertsWithCounts = getFragmentData(
+    AlertListFragment,
+    alertsWithCountsProp,
+  );
+  console.log('----> AlertList fragment data', alertsWithCounts);
+  const { alerts } = alertsWithCounts;
 
   // define interface for sorting and grouping
   interface GroupedAlerts {
@@ -69,18 +79,6 @@ export function AlertList() {
     }
   }, [alerts, router, selectedAlertId]);
 
-  if (loading) {
-    return <div className="p-4 w-80 shrink-0">Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="p-4 w-80 shrink-0">Error: {error.message}</div>;
-  }
-
-  if (!alerts) {
-    return <div className="p-4 w-80 shrink-0">Error: Alerts not found</div>;
-  }
-
   const groupedAlerts = sortAndGroupAlerts(
     alerts as AlertSortAndGroupPartial[],
   ) as GroupedAlerts[];
@@ -91,7 +89,7 @@ export function AlertList() {
    * to work correctly (position: sticky).
    */
   return (
-    <div className="bg-background w-80 shrink-0 overflow-auto">
+    <div className={baseStyles}>
       <Accordion
         type="multiple"
         defaultValue={groupedAlerts.map((group) => group.alertType)}

@@ -57,9 +57,22 @@ type Alert {
   event: Event!
 }
 
+# eslint-disable-next-line @graphql-eslint/strict-id-in-types
+type AlertCounts {
+  orderAlerts: Int!
+  statementAlerts: Int!
+}
+
+# A list of alerts + counts.
+# eslint-disable-next-line @graphql-eslint/strict-id-in-types
+type AlertsWithCounts {
+  alerts: [Alert!]!
+  counts: AlertCounts!
+}
+
 # ---------- Queries ----------
 
 type Query {
   alert(id: ID!): Alert
-  alerts: [Alert!]!
+  alertsWithCounts: AlertsWithCounts!
 }
