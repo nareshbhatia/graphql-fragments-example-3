@@ -16,7 +16,6 @@ export const handlers = [
         statementAlerts: statementAlerts.length,
       },
     };
-    console.log('---> msw-handler:alertsPage', alertsWithCounts);
     return HttpResponse.json({
       data: {
         alertsWithCounts,

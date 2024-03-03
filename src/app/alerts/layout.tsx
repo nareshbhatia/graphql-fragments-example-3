@@ -17,7 +17,7 @@ const alertsPageDocument = graphql(/* GraphQL */ `
     alertsWithCounts {
       alerts {
         id
-        ...AlertList
+        ...AlertItem
       }
       counts {
         orderAlerts
@@ -44,13 +44,15 @@ export default function AlertsLayout({ children }: AlertsLayoutProps) {
   }
 
   if (!alertsWithCounts) {
-    return <div className={baseStyles}>Error: Alert not found</div>;
+    return <div className={baseStyles}>Error: Alerts not found</div>;
   }
 
-  console.log('----> AlertsPage', alertsWithCounts);
+  const { alerts, counts } = alertsWithCounts;
+  console.log('----> counts', counts);
+
   return (
     <div className={baseStyles}>
-      <AlertList alerts={alertsWithCounts.alerts} />
+      <AlertList alerts={alerts} />
       {children}
     </div>
   );

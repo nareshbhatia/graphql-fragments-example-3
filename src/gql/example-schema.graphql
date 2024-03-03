@@ -53,7 +53,7 @@ enum AlertType {
 
 type Alert {
   id: ID!
-  alertType: AlertType
+  alertType: AlertType!
   event: Event!
 }
 

@@ -9,23 +9,23 @@ import {
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
 import { AlertType } from '@/generated/gql/graphql';
-import type { AlertSortAndGroupPartial } from '@/models';
-import { sortAndGroupAlerts } from '@/models';
+import { PreferredAlertTypeOrder } from '@/models';
 import { cn } from '@/lib/utils';
 import { capitalCase } from 'change-case';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { sortBy, groupBy } from 'lodash';
 import * as React from 'react';
 
 const baseStyles = 'bg-background w-80 shrink-0 overflow-auto';
 
 /*
- * "fragment AlertList" generates:
- *   1. AlertListFragment
- *   2. AlertListFragmentDoc
+ * "fragment AlertItem" generates:
+ *   1. AlertItemFragment
+ *   2. AlertItemFragmentDoc
  */
-const AlertListFragment = graphql(/* GraphQL */ `
-  fragment AlertList on Alert {
+const AlertItemFragment = graphql(/* GraphQL */ `
+  fragment AlertItem on Alert {
     id
     alertType
     event {
@@ -40,13 +40,11 @@ const AlertListFragment = graphql(/* GraphQL */ `
 `);
 
 export interface AlertListProps {
-  alerts: FragmentType<typeof AlertListFragment>[];
+  alerts: FragmentType<typeof AlertItemFragment>[];
 }
 
 export function AlertList({ alerts: alertsProp }: AlertListProps) {
-  console.log('----> AlertList prop', alertsProp);
-  const alerts = getFragmentData(AlertListFragment, alertsProp);
-  console.log('----> AlertList fragment data', alerts);
+  const alerts = getFragmentData(AlertItemFragment, alertsProp);
 
   // define interface for sorting and grouping
   interface GroupedAlerts {
@@ -62,20 +60,24 @@ export function AlertList({ alerts: alertsProp }: AlertListProps) {
 
   React.useEffect(() => {
     if (alerts && alerts.length > 0 && !selectedAlertId) {
-      // @ts-expect-error suppress type error ts(2352) TODO: fix */}
-      const groupedAlerts = sortAndGroupAlerts(
-        alerts as unknown as AlertSortAndGroupPartial[],
-      ) as GroupedAlerts[];
+      // TODO: extract into `sortAndGroupAlerts()` function with correct types
+      const groupedAlertsTemp = groupBy(alerts, (alert) => alert.alertType);
+      const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
+        alertType,
+        alerts: sortBy(groupedAlertsTemp[alertType], [(alert) => alert.id]),
+      })).filter(({ alerts }) => alerts.length > 0);
       if (groupedAlerts.length > 0 && groupedAlerts[0].alerts) {
         router.push(`/alerts/${groupedAlerts[0]?.alerts[0].id}`);
       }
     }
   }, [alerts, router, selectedAlertId]);
 
-  // @ts-expect-error suppress type error ts(2352) TODO: fix */}
-  const groupedAlerts = sortAndGroupAlerts(
-    alerts as unknown as AlertSortAndGroupPartial[],
-  ) as GroupedAlerts[];
+  // TODO: extract into `sortAndGroupAlerts()` function with correct types
+  const groupedAlertsTemp = groupBy(alerts, (alert) => alert.alertType);
+  const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
+    alertType,
+    alerts: sortBy(groupedAlertsTemp[alertType], [(alert) => alert.id]),
+  })).filter(({ alerts }) => alerts.length > 0);
 
   /*
    * The structure under AccordionItem is to make sure that accordion headers
