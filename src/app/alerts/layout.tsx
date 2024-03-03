@@ -17,12 +17,12 @@ const alertsPageDocument = graphql(/* GraphQL */ `
     alertsWithCounts {
       alerts {
         id
+        ...AlertList
       }
       counts {
         orderAlerts
         statementAlerts
       }
-      ...AlertList
     }
   }
 `);
@@ -50,7 +50,7 @@ export default function AlertsLayout({ children }: AlertsLayoutProps) {
   console.log('----> AlertsPage', alertsWithCounts);
   return (
     <div className={baseStyles}>
-      <AlertList alertsWithCounts={alertsWithCounts} />
+      <AlertList alerts={alertsWithCounts.alerts} />
       {children}
     </div>
   );

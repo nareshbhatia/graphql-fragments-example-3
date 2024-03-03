@@ -25,36 +25,28 @@ const baseStyles = 'bg-background w-80 shrink-0 overflow-auto';
  *   2. AlertListFragmentDoc
  */
 const AlertListFragment = graphql(/* GraphQL */ `
-  fragment AlertList on AlertsWithCounts {
-    alerts {
-      id
-      alertType
-      event {
-        ... on OrderEvent {
-          ...OrderEventItem
-        }
-        ... on StatementEvent {
-          ...StatementEventItem
-        }
+  fragment AlertList on Alert {
+    id
+    alertType
+    event {
+      ... on OrderEvent {
+        ...OrderEventItem
+      }
+      ... on StatementEvent {
+        ...StatementEventItem
       }
     }
   }
 `);
 
 export interface AlertListProps {
-  alertsWithCounts: FragmentType<typeof AlertListFragment>;
+  alerts: FragmentType<typeof AlertListFragment>[];
 }
 
-export function AlertList({
-  alertsWithCounts: alertsWithCountsProp,
-}: AlertListProps) {
-  console.log('----> AlertList prop', alertsWithCountsProp);
-  const alertsWithCounts = getFragmentData(
-    AlertListFragment,
-    alertsWithCountsProp,
-  );
-  console.log('----> AlertList fragment data', alertsWithCounts);
-  const { alerts } = alertsWithCounts;
+export function AlertList({ alerts: alertsProp }: AlertListProps) {
+  console.log('----> AlertList prop', alertsProp);
+  const alerts = getFragmentData(AlertListFragment, alertsProp);
+  console.log('----> AlertList fragment data', alerts);
 
   // define interface for sorting and grouping
   interface GroupedAlerts {
@@ -70,8 +62,9 @@ export function AlertList({
 
   React.useEffect(() => {
     if (alerts && alerts.length > 0 && !selectedAlertId) {
+      // @ts-expect-error suppress type error ts(2352) TODO: fix */}
       const groupedAlerts = sortAndGroupAlerts(
-        alerts as AlertSortAndGroupPartial[],
+        alerts as unknown as AlertSortAndGroupPartial[],
       ) as GroupedAlerts[];
       if (groupedAlerts.length > 0 && groupedAlerts[0].alerts) {
         router.push(`/alerts/${groupedAlerts[0]?.alerts[0].id}`);
@@ -79,8 +72,9 @@ export function AlertList({
     }
   }, [alerts, router, selectedAlertId]);
 
+  // @ts-expect-error suppress type error ts(2352) TODO: fix */}
   const groupedAlerts = sortAndGroupAlerts(
-    alerts as AlertSortAndGroupPartial[],
+    alerts as unknown as AlertSortAndGroupPartial[],
   ) as GroupedAlerts[];
 
   /*
