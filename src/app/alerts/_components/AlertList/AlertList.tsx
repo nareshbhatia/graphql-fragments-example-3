@@ -61,10 +61,10 @@ export function AlertList({ alerts: alertsProp }: AlertListProps) {
   React.useEffect(() => {
     if (alerts && alerts.length > 0 && !selectedAlertId) {
       // TODO: extract into `sortAndGroupAlerts()` function with correct types
-      const groupedAlertsTemp = groupBy(alerts, (alert) => alert.alertType);
+      const groupedAlertsStep1 = groupBy(alerts, (alert) => alert.alertType);
       const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
         alertType,
-        alerts: sortBy(groupedAlertsTemp[alertType], [(alert) => alert.id]),
+        alerts: sortBy(groupedAlertsStep1[alertType], [(alert) => alert.id]),
       })).filter(({ alerts }) => alerts.length > 0);
       if (groupedAlerts.length > 0 && groupedAlerts[0].alerts) {
         router.push(`/alerts/${groupedAlerts[0]?.alerts[0].id}`);
@@ -73,10 +73,10 @@ export function AlertList({ alerts: alertsProp }: AlertListProps) {
   }, [alerts, router, selectedAlertId]);
 
   // TODO: extract into `sortAndGroupAlerts()` function with correct types
-  const groupedAlertsTemp = groupBy(alerts, (alert) => alert.alertType);
+  const groupedAlertsStep1 = groupBy(alerts, (alert) => alert.alertType);
   const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
     alertType,
-    alerts: sortBy(groupedAlertsTemp[alertType], [(alert) => alert.id]),
+    alerts: sortBy(groupedAlertsStep1[alertType], [(alert) => alert.id]),
   })).filter(({ alerts }) => alerts.length > 0);
 
   /*
