@@ -10,6 +10,7 @@ import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
 import { PreferredAlertTypeOrder } from '@/models';
 import { cn } from '@/lib/utils';
+import { ResultOf } from '@graphql-typed-document-node/core';
 import { capitalCase } from 'change-case';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -51,26 +52,26 @@ export function AlertList({ alerts: alertsProp }: AlertListProps) {
 
   const router = useRouter();
 
+  function sortAndGroupAlerts(
+    alerts: readonly ResultOf<typeof AlertItemFragment>[],
+  ) {
+    const groupedAlerts = groupBy(alerts, (alert) => alert.alertType);
+    return PreferredAlertTypeOrder.map((alertType) => ({
+      alertType,
+      alerts: sortBy(groupedAlerts[alertType], [(alert) => alert.id]),
+    })).filter(({ alerts }) => alerts.length > 0);
+  }
+
   React.useEffect(() => {
     if (alerts && alerts.length > 0 && !selectedAlertId) {
-      // TODO: extract into `sortAndGroupAlerts()` function with correct types
-      const groupedAlertsStep1 = groupBy(alerts, (alert) => alert.alertType);
-      const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
-        alertType,
-        alerts: sortBy(groupedAlertsStep1[alertType], [(alert) => alert.id]),
-      })).filter(({ alerts }) => alerts.length > 0);
+      const groupedAlerts = sortAndGroupAlerts(alerts);
       if (groupedAlerts.length > 0 && groupedAlerts[0].alerts) {
         router.push(`/alerts/${groupedAlerts[0]?.alerts[0].id}`);
       }
     }
   }, [alerts, router, selectedAlertId]);
 
-  // TODO: extract into `sortAndGroupAlerts()` function with correct types
-  const groupedAlertsStep1 = groupBy(alerts, (alert) => alert.alertType);
-  const groupedAlerts = PreferredAlertTypeOrder.map((alertType) => ({
-    alertType,
-    alerts: sortBy(groupedAlertsStep1[alertType], [(alert) => alert.id]),
-  })).filter(({ alerts }) => alerts.length > 0);
+  const groupedAlerts = sortAndGroupAlerts(alerts);
 
   /*
    * The structure under AccordionItem is to make sure that accordion headers
