@@ -1,10 +1,8 @@
-import type { Alert } from '@/generated/gql/graphql';
 import {
   AlertType,
   OrderEventType,
   StatementEventType,
 } from '@/generated/gql/graphql';
-import { sortBy, groupBy } from 'lodash';
 
 export const OrderEventTypeToAlertType: Record<OrderEventType, AlertType> = {
   [OrderEventType.OrderDelayed]: AlertType.OrderDelayed,

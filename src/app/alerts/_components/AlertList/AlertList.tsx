@@ -8,7 +8,6 @@ import {
 } from '@/components/ui/accordion';
 import type { FragmentType } from '@/generated/gql';
 import { graphql, getFragmentData } from '@/generated/gql';
-import { AlertType } from '@/generated/gql/graphql';
 import { PreferredAlertTypeOrder } from '@/models';
 import { cn } from '@/lib/utils';
 import { capitalCase } from 'change-case';
@@ -45,12 +44,6 @@ export interface AlertListProps {
 
 export function AlertList({ alerts: alertsProp }: AlertListProps) {
   const alerts = getFragmentData(AlertItemFragment, alertsProp);
-
-  // define interface for sorting and grouping
-  interface GroupedAlerts {
-    alertType: AlertType;
-    alerts: typeof alerts;
-  }
 
   // extract selectedAlertId from a pathname like '/alerts/[id]'
   const pathname = usePathname();
